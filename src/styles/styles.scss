@@ -21,6 +21,15 @@
   margin: 0 10px;
 }
 
+.geolocate {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  ::hover {
+  }
+}
+
 @media only screen and (min-width: 768px) {
   .accordion {
     display: flex;

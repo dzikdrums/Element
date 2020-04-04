@@ -1,6 +1,6 @@
-import { InteractiveMap, Marker } from 'react-map-gl';
+import { GeolocateControl, InteractiveMap, Marker } from 'react-map-gl';
 import React, { Component } from 'react';
-import { addMarker, editMarker, getMarkers } from 'redux/mapRedux';
+import { addMarker, editMarker, getMarkers } from '../redux/mapRedux';
 
 import Pin from './Pin';
 import { connect } from 'react-redux';
@@ -75,9 +75,13 @@ class Map extends Component {
           mapboxApiAccessToken={MAPBOX_TOKEN}
           onClick={handleClick}
         >
+          <GeolocateControl
+            positionOptions={{ enableHighAccuracy: true }}
+            trackUserLocation={true}
+            className="geolocate"
+          />
           {this.props.markers.length
             ? this.props.markers.map((m, i) => {
-                // <Marker /> just places its children at the right lat lng.
                 return (
                   <Marker
                     draggable

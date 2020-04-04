@@ -3,12 +3,6 @@ import { getMarkers, removeMarker } from '../redux/mapRedux';
 
 import { connect } from 'react-redux';
 
-const idStyle = {
-  verticalAlign: 'middle',
-  textAlign: 'center',
-  padding: '0'
-};
-
 const ListOfMarkers = ({ markers, removeMarker }) => {
   const [isMobile, setMobile] = useState(window.innerWidth < 480);
 

@@ -1,4 +1,4 @@
-import { combineReducers, compose, createStore } from 'redux';
+import { combineReducers, createStore } from 'redux';
 
 import mapReducer from './mapRedux';
 
@@ -7,9 +7,4 @@ const rootReducer = combineReducers({
   map: mapReducer
 });
 
-/* eslint-disable no-underscore-dangle */
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-export const store = createStore(rootReducer, composeEnhancers());
-/* eslint-enable */
-
-export default store;
+export const store = createStore(rootReducer);
