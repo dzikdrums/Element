@@ -1,0 +1,32 @@
+.card {
+  padding: 5px;
+}
+
+.tableRow {
+  padding: 0;
+  vertical-align: middle;
+}
+
+.id {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0;
+}
+
+.map {
+  height: 40vh;
+}
+
+.arrow {
+  margin: 0 10px;
+}
+
+@media only screen and (min-width: 768px) {
+  .accordion {
+    display: flex;
+    flex-direction: row;
+  }
+  .map {
+    height: 80vh;
+  }
+}

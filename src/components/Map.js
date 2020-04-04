@@ -1,10 +1,9 @@
-import './Map.scss';
-
 import { InteractiveMap, Marker } from 'react-map-gl';
 import React, { Component } from 'react';
+import { addMarker, editMarker, getMarkers } from 'redux/mapRedux';
 
 import Pin from './Pin';
-import uniqid from 'uniqid';
+import { connect } from 'react-redux';
 
 const MAPBOX_TOKEN =
   'pk.eyJ1IjoiZHppa2RydW1zIiwiYSI6ImNrOGtlZWxiajAwdGozcHJ0Y3F4Z2E0ZmgifQ.lnpODOl4BQ7tC5ZrkLbh_w';
@@ -18,7 +17,6 @@ class Map extends Component {
       bearing: 0,
       pitch: 20
     },
-    markers: [],
     events: {}
   };
 
@@ -30,10 +28,13 @@ class Map extends Component {
     };
 
     const handleClick = ({ lngLat: [longitude, latitude] }) => {
-      const id = uniqid();
-      this.setState({
-        markers: [...this.state.markers, { id: id, longitude, latitude }]
-      });
+      let id;
+      if (!this.props.markers.length) {
+        id = 0;
+      } else {
+        id = this.props.markers[this.props.markers.length - 1].id + 1;
+      }
+      this.props.addMarker({ id: id, longitude, latitude });
     };
 
     const logDragEvent = (name, event) => {
@@ -56,33 +57,26 @@ class Map extends Component {
 
     const onMarkerDragEnd = (event, id) => {
       logDragEvent('onDragEnd', event);
-      const item = this.state.markers.findIndex(x => x.id === id);
-      this.setState(({ markers }) => ({
-        markers: [
-          ...markers.slice(0, item),
-          {
-            ...markers[item],
-            longitude: event.lngLat[0],
-            latitude: event.lngLat[1]
-          },
-          ...markers.slice(item + 1)
-        ]
-      }));
+      this.props.editMarker({
+        id: id,
+        longitude: event.lngLat[0],
+        latitude: event.lngLat[1]
+      });
     };
 
     return (
-      <>
+      <div className="map">
         <InteractiveMap
           {...this.state.viewport}
-          width="50vh"
-          height="50vh"
+          width="100%"
+          height="100%"
           mapStyle="mapbox://styles/mapbox/streets-v11"
           onViewportChange={setViewport}
           mapboxApiAccessToken={MAPBOX_TOKEN}
           onClick={handleClick}
         >
-          {this.state.markers.length
-            ? this.state.markers.map((m, i) => {
+          {this.props.markers.length
+            ? this.props.markers.map((m, i) => {
                 // <Marker /> just places its children at the right lat lng.
                 return (
                   <Marker
@@ -93,15 +87,25 @@ class Map extends Component {
                     {...m}
                     key={i}
                   >
-                    <Pin />
+                    <Pin id={m.id} />
                   </Marker>
                 );
               })
             : null}
         </InteractiveMap>
-      </>
+      </div>
     );
   }
 }
 
-export default Map;
+const mapStateToProps = state => ({
+  markers: getMarkers(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+  addMarker: marker => dispatch(addMarker(marker)),
+  editMarker: (id, longitude, latitude) =>
+    dispatch(editMarker(id, longitude, latitude))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map);
