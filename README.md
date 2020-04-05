@@ -1,3 +1,5 @@
+### See [DEMO](https://curiouselement.netlify.com/)
+
 #### To run the app locally:
 
 Clone project and use command:
