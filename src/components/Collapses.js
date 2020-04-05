@@ -14,10 +14,7 @@ const Collapses = () => (
         <a
           className="collapsed h3 arrowContainer"
           data-toggle="collapse"
-          data-parent="#accordion"
           href="#collapseOne"
-          aria-expanded="false"
-          aria-controls="collapseOne"
         >
           Map
           <i className="now-ui-icons arrows-1_minimal-down arrow"></i>
@@ -39,10 +36,7 @@ const Collapses = () => (
         <a
           className="collapsed h3 arrowContainer"
           data-toggle="collapse"
-          data-parent="#accordion"
           href="#collapseTwo"
-          aria-expanded="false"
-          aria-controls="collapseTwo"
         >
           Markers
           <i className="now-ui-icons arrows-1_minimal-down arrow"></i>

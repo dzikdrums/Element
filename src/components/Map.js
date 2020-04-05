@@ -20,49 +20,51 @@ class Map extends Component {
     events: {}
   };
 
+  setViewport = viewport => {
+    this.setState({
+      viewport: viewport
+    });
+  };
+
+  handleClick = ({ lngLat: [longitude, latitude] }) => {
+    let id;
+    if (!this.props.markers.length) {
+      id = 0;
+    } else {
+      id = this.props.markers[this.props.markers.length - 1].id + 1;
+    }
+    this.props.addMarker({ id: id, longitude, latitude });
+  };
+
+  logDragEvent = (name, event) => {
+    this.setState({
+      events: this.state.events
+    });
+    this.setState({
+      ...this.state.events,
+      [name]: event.lngLat
+    });
+  };
+
+  onMarkerDragStart = event => {
+    this.logDragEvent('onDragStart', event);
+  };
+
+  onMarkerDrag = event => {
+    this.logDragEvent('onDrag', event);
+  };
+
+  onMarkerDragEnd = (event, id) => {
+    this.logDragEvent('onDragEnd', event);
+    this.props.editMarker({
+      id: id,
+      longitude: event.lngLat[0],
+      latitude: event.lngLat[1]
+    });
+  };
+
   render() {
-    const setViewport = props => {
-      this.setState({
-        viewport: props
-      });
-    };
-
-    const handleClick = ({ lngLat: [longitude, latitude] }) => {
-      let id;
-      if (!this.props.markers.length) {
-        id = 0;
-      } else {
-        id = this.props.markers[this.props.markers.length - 1].id + 1;
-      }
-      this.props.addMarker({ id: id, longitude, latitude });
-    };
-
-    const logDragEvent = (name, event) => {
-      this.setState({
-        events: this.state.events
-      });
-      this.setState({
-        ...this.state.events,
-        [name]: event.lngLat
-      });
-    };
-
-    const onMarkerDragStart = event => {
-      logDragEvent('onDragStart', event);
-    };
-
-    const onMarkerDrag = event => {
-      logDragEvent('onDrag', event);
-    };
-
-    const onMarkerDragEnd = (event, id) => {
-      logDragEvent('onDragEnd', event);
-      this.props.editMarker({
-        id: id,
-        longitude: event.lngLat[0],
-        latitude: event.lngLat[1]
-      });
-    };
+    const { markers } = this.props;
 
     return (
       <div className="map">
@@ -71,23 +73,23 @@ class Map extends Component {
           width="100%"
           height="100%"
           mapStyle="mapbox://styles/mapbox/streets-v11"
-          onViewportChange={setViewport}
+          onViewportChange={this.setViewport}
           mapboxApiAccessToken={MAPBOX_TOKEN}
-          onClick={handleClick}
+          onClick={this.handleClick}
         >
           <GeolocateControl
             positionOptions={{ enableHighAccuracy: true }}
             trackUserLocation={true}
             className="geolocate"
           />
-          {this.props.markers.length
-            ? this.props.markers.map((m, i) => {
+          {markers.length
+            ? markers.map((m, i) => {
                 return (
                   <Marker
                     draggable
-                    onDragStart={onMarkerDragStart}
-                    onDrag={onMarkerDrag}
-                    onDragEnd={event => onMarkerDragEnd(event, m.id)}
+                    onDragStart={this.onMarkerDragStart}
+                    onDrag={this.onMarkerDrag}
+                    onDragEnd={event => this.onMarkerDragEnd(event, m.id)}
                     {...m}
                     key={i}
                   >
